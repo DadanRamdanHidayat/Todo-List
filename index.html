@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>TaskFlow — Student Productivity Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Poppins', 'system-ui', 'sans-serif'] }, colors: { bg: 'var(--bg)', sf: 'var(--sf)', tx: 'var(--tx)', mu: 'var(--mu)', bd: 'var(--bd)', ac: 'var(--ac)', ok: 'var(--ok)', wa: 'var(--wa)', er: 'var(--er)' } } } }</script>
+    <style type="text/tailwindcss">
+        :root{--ac:#0d9488;--acx:#fff;--sel:#ccfbf1;--bg:#eef2f7;--sf:#fff;--tx:#1f2937;--mu:#6b7280;--bd:#e5e7eb;--ok:#16a34a;--wa:#d97706;--er:#dc2626;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ac:#2dd4bf;--acx:#042f2e;--sel:#134e4a;--bg:#0b1220;--sf:#162033;--tx:#e5e7eb;--mu:#9ca3af;--bd:#2a3750;--ok:#4ade80;--wa:#fbbf24;--er:#f87171;color-scheme:dark}}
+:root[data-theme="dark"]{--ac:#2dd4bf;--acx:#042f2e;--sel:#134e4a;--bg:#0b1220;--sf:#162033;--tx:#e5e7eb;--mu:#9ca3af;--bd:#2a3750;--ok:#4ade80;--wa:#fbbf24;--er:#f87171;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{@apply font-sans bg-bg text-tx text-[15px]}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+nav{@apply fixed inset-x-0 bottom-0 z-[6] flex overflow-x-auto px-1 pt-1 text-white;background:linear-gradient(180deg,#14b8a6,#2563eb);padding-bottom:calc(4px + env(safe-area-inset-bottom,0px))}
+nav .brand{@apply hidden items-center gap-2 text-xl font-bold px-3 pb-6}
+nav button.nb{@apply flex flex-none flex-col items-center gap-0.5 min-w-[68px] px-2 py-1.5 text-[11px] rounded-xl opacity-80}
+nav button.nb.on{@apply bg-white/20 opacity-100 font-semibold}
+nav .sw2{@apply hidden}
+.wrap{@apply pb-24}
+.top{@apply sticky z-[5] flex items-center gap-2 px-4 py-3 bg-bg;top:env(safe-area-inset-top,0px)}
+.top h1{@apply flex-1 min-w-0 truncate text-xl font-bold}
+.top input{@apply hidden max-w-[260px] rounded-full shadow-sm}
+.av{@apply grid flex-none place-items-center w-10 h-10 rounded-full text-white font-bold;background:linear-gradient(135deg,#14b8a6,#2563eb)}
+main{@apply px-4 pb-4 max-w-[1200px]}
+@media(min-width:768px){nav{@apply top-0 right-auto bottom-auto h-full w-60 flex-col overflow-y-auto px-4 py-5}nav .brand{@apply flex}nav button.nb{@apply flex-row justify-start gap-3 text-sm w-full min-w-0 px-3 py-2.5}nav .sw2{@apply flex items-center justify-between mt-auto text-sm px-3 py-3}.wrap{margin-left:15rem;padding-bottom:1.5rem}.top input{display:block;flex:0 1 260px}}
+.card{@apply bg-sf border border-bd rounded-3xl p-4 mb-3 shadow-sm}
+.g6{@apply grid-cols-2 gap-3 mb-3}@media(min-width:768px){.g6{@apply grid-cols-5}}
+.two{display:grid;column-gap:.75rem;grid-template-columns:minmax(0,1fr)}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+h3{@apply text-[15px] font-semibold mb-2}
+.mu{@apply text-mu text-[13px]}
+.big{@apply text-[26px] font-bold}
+.task{@apply flex items-start gap-3 py-3 border-b border-bd last:border-0}
+.tb{@apply flex-1 min-w-0}.tt{@apply font-semibold break-words}.td{@apply text-mu text-[13px] break-words}
+.done .tt{@apply line-through text-mu}
+.meta{@apply flex flex-wrap gap-1 mt-1}
+.chip{@apply text-xs px-2 py-px rounded-full border border-bd text-mu whitespace-nowrap}
+.chip[style]{border-color:var(--c);color:var(--c)}
+.p-high,.late{@apply text-er border-er}.p-medium,.s-doing{@apply text-wa border-wa}.p-low,.s-done{@apply text-ok border-ok}
+.chk,.ib{@apply grid flex-none place-items-center w-9 h-9 rounded-xl border border-bd bg-transparent text-mu}
+.chk svg{opacity:0}.chk.on{@apply bg-ok border-ok text-white}.chk.on svg{opacity:1}
+.act{@apply flex gap-1}
+.btn{@apply inline-flex items-center justify-center gap-1 px-4 py-2 min-h-[40px] rounded-xl font-semibold text-white shadow-sm;background:linear-gradient(90deg,#14b8a6,#2563eb)}
+.btn.g{@apply text-tx border border-bd shadow-none;background:none}.btn.d{background:var(--er)}
+input,select,textarea{@apply w-full border border-bd bg-sf rounded-xl px-3 py-2 min-h-[40px]}
+input[type=checkbox]{@apply w-5 h-5 min-h-0 flex-none p-0}input[type=color]{@apply w-12 p-0.5}
+label{@apply block text-[13px] text-mu mt-3 mb-1}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.bar{@apply flex items-center gap-2 my-1.5 text-[13px]}.bar span{@apply w-24 flex-none truncate}.bar .tr{@apply flex-1 bg-bg rounded-md overflow-hidden}.bar i{@apply block h-2.5 rounded-md min-w-[2px];background:var(--c,var(--ac))}
+.filters{display:grid;gap:.5rem;grid-template-columns:1fr 1fr;margin-bottom:.75rem}.filters>*:first-child{grid-column:1/-1}@media(min-width:768px){.filters{grid-template-columns:2fr repeat(5,1fr)}.filters>*:first-child{grid-column:auto}}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:.25rem}.wd{@apply text-center text-xs text-mu}
+.day{@apply flex flex-col items-center gap-1 min-h-[48px] px-0.5 py-1 text-[13px] rounded-xl border border-bd bg-sf}.day.sel{outline:2px solid var(--ac)}.day.tdy{@apply font-bold text-ac}
+.dots{@apply flex flex-wrap justify-center gap-0.5}.dot{@apply w-1.5 h-1.5 rounded-full}
+.nav2{@apply flex items-center gap-2 mb-2.5}.nav2 b{@apply flex-1 text-center capitalize}
+.notes{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}.note p{@apply whitespace-pre-wrap break-words text-mu my-1.5}
+.ov{@apply fixed inset-0 z-20 flex items-end justify-center;background:#0008}
+.md{@apply bg-sf w-full max-w-[560px] max-h-[92%] overflow-auto rounded-t-3xl p-5}@media(min-width:600px){.ov{@apply items-center}.md{@apply rounded-3xl}}
+.mh{@apply flex items-center justify-between}.mf{@apply flex flex-wrap justify-end gap-2 mt-4}
+.sub{@apply flex items-center gap-2 my-1}.err{@apply text-er text-[13px] min-h-[18px]}.empty{@apply text-center text-mu px-2 py-5}
+.toast{@apply fixed left-1/2 -translate-x-1/2 bottom-24 z-30 text-white px-4 py-2.5 rounded-xl max-w-[90%] bg-ok}.toast.err{@apply bg-er}
+.prog{@apply h-2 rounded-md bg-bg overflow-hidden mt-3 mb-1}.prog i{@apply block h-full bg-ok}
+.crow{@apply flex items-center gap-2 py-2 border-b border-bd}.crow>span:nth-child(2){@apply flex-1}.sw{@apply w-3.5 h-3.5 rounded-full flex-none}
+</style>
+</head>
+
+<body>
+    <nav id="nav"></nav>
+    <div class="wrap">
+        <header class="top">
+            <h1 id="ttl"></h1><input id="gs" type="search" placeholder="Cari tugas..." aria-label="Cari tugas"><button
+                class="btn" id="add"></button><button class="ib" id="th" aria-label="Ganti tema"></button>
+            <div class="av" id="av" title="Profil lokal"></div>
+        </header>
+        <main id="main"></main>
+    </div>
+    <script>
+        const K = { t: 'taskflow_tasks', c: 'taskflow_categories', n: 'taskflow_notes', s: 'taskflow_settings', th: 'taskflow_theme', v: 'taskflow_schema_version' };
+        const P = { low: 'Low', medium: 'Medium', high: 'High' }, S = { todo: 'To Do', doing: 'In Progress', done: 'Done' };
+        const PAGES = [['dashboard', 'Dashboard', 'home'], ['tasks', 'Semua Tugas', 'list'], ['today', 'Hari Ini', 'sun'], ['upcoming', 'Mendatang', 'clock'], ['calendar', 'Kalender', 'cal'], ['categories', 'Kategori', 'tag'], ['notes', 'Catatan', 'note'], ['stats', 'Statistik', 'chart'], ['settings', 'Pengaturan', 'gear']];
+        const IC = { home: 'mdiViewDashboard', list: 'mdiFormatListChecks', sun: 'mdiCalendarToday', clock: 'mdiClockOutline', cal: 'mdiCalendarMonth', tag: 'mdiTagMultiple', note: 'mdiNoteTextOutline', chart: 'mdiChartBox', gear: 'mdiCog', edit: 'mdiPencil', trash: 'mdiDeleteOutline', check: 'mdiCheck', pin: 'mdiPin', x: 'mdiClose', moon: 'mdiWeatherNight', logo: 'mdiCheckboxMarkedCircleOutline', plus: 'mdiPlus' };
+        let MDI = null; const ic = (n, z = 20) => { const e = document.createElement('span'); e.className = 'inline-grid place-items-center'; e.style.cssText = 'width:' + z + 'px;height:' + z + 'px'; if (MDI && MDI[IC[n]]) e.innerHTML = '<svg viewBox="0 0 24 24" width="' + z + '" height="' + z + '" fill="currentColor" aria-hidden="true"><path d="' + MDI[IC[n]] + '"/></svg>'; return e };
+        import('https://cdn.jsdelivr.net/npm/@mdi/js@7.4.47/+esm').then(m => { MDI = m; shell() }).catch(() => { });
+        function h(t, p = {}, ...k) { const e = document.createElement(t); for (const [a, v] of Object.entries(p)) { if (a === 'class') e.className = v; else if (a.startsWith('on')) e.addEventListener(a.slice(2), v); else if (v === true) e.setAttribute(a, ''); else if (v !== false && v != null) e.setAttribute(a, v) } for (const c of k.flat()) if (c != null && c !== false) e.append(c.nodeType ? c : document.createTextNode(c)); return e }
+        const Store = { get(k, d) { try { const r = localStorage.getItem(k); return r == null ? d : JSON.parse(r) } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true } catch (e) { toast('Gagal menyimpan: penyimpanan browser tidak tersedia atau penuh.', 'err'); return false } }, del(k) { try { localStorage.removeItem(k) } catch (e) { } }, id: () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7) };
+        const pad = n => String(n).padStart(2, '0'), ds = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), today = () => ds(new Date()), pd = s => { const [a, b, c] = s.split('-').map(Number); return new Date(a, b - 1, c) };
+        const fd = (s, o) => pd(s).toLocaleDateString('id-ID', o || { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        const nowHM = () => { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()) };
+        const R_D = /^\d{4}-\d{2}-\d{2}$/, R_T = /^\d{2}:\d{2}$/, R_C = /^#[0-9a-f]{6}$/i;
+        const sT = o => { if (!o || typeof o !== 'object' || !o.id || !String(o.title || '').trim()) return null; const n = Date.now(); return { id: String(o.id), title: String(o.title).trim().slice(0, 200), desc: String(o.desc || '').slice(0, 2000), cat: String(o.cat || 'lainnya'), pri: P[o.pri] ? o.pri : 'medium', status: S[o.status] ? o.status : 'todo', due: R_D.test(o.due) ? o.due : '', time: R_T.test(o.time) ? o.time : '', subs: Array.isArray(o.subs) ? o.subs.filter(s => s && String(s.title || '').trim()).map(s => ({ id: String(s.id || Store.id()), title: String(s.title).slice(0, 200), done: !!s.done })) : [], created: Number(o.created) || n, updated: Number(o.updated) || n, doneAt: o.doneAt ? Number(o.doneAt) : null } };
+        const sC = o => o && o.id && String(o.name || '').trim() ? { id: String(o.id), name: String(o.name).trim().slice(0, 40), color: R_C.test(o.color) ? o.color : '#6b7280' } : null;
+        const sN = o => o && o.id ? { id: String(o.id), title: String(o.title || 'Tanpa judul').slice(0, 120), body: String(o.body || '').slice(0, 10000), created: Number(o.created) || Date.now(), updated: Number(o.updated) || Date.now(), pin: !!o.pin } : null;
+        let tasks, cats, notes, set, F = { q: '', cat: '', st: '', pri: '', sort: 'due' }, cm = new Date(), sel = today(), nq = ''; cm.setDate(1);
+        const DC = [['kuliah', 'Kuliah', '#4f46e5'], ['organisasi', 'Organisasi', '#0891b2'], ['kepanitiaan', 'Kepanitiaan', '#db2777'], ['magang', 'Magang dan Pekerjaan', '#d97706'], ['proyek', 'Proyek Pribadi', '#7c3aed'], ['pribadi', 'Kehidupan Pribadi', '#16a34a'], ['lainnya', 'Lainnya', '#6b7280']].map(([id, name, color]) => ({ id, name, color }));
+        function load() { const a = x => Array.isArray(x) ? x : []; cats = a(Store.get(K.c, null)).map(sC).filter(Boolean); if (!cats.length) cats = DC.map(c => ({ ...c })); tasks = a(Store.get(K.t, [])).map(sT).filter(Boolean); notes = a(Store.get(K.n, [])).map(sN).filter(Boolean); const s = Store.get(K.s, {}) || {}; set = { name: String(s.name || '').slice(0, 40), start: PAGES.some(p => p[0] === s.start) ? s.start : 'dashboard' } }
+        const persist = () => { Store.set(K.t, tasks); Store.set(K.c, cats); Store.set(K.n, notes); Store.set(K.s, set); Store.set(K.v, 1) };
+        const cat = id => cats.find(c => c.id === id) || { name: 'Lainnya', color: '#6b7280' };
+        const overdue = t => t.status !== 'done' && t.due && (t.due < today() || (t.due === today() && t.time && t.time < nowHM()));
+        const stc = t => overdue(t) ? 'var(--er)' : t.status === 'done' ? 'var(--ok)' : t.status === 'doing' ? 'var(--wa)' : 'var(--ac)';
+        function stats() { const n = tasks.length, d = tasks.filter(t => t.status === 'done').length; return { n, todo: tasks.filter(t => t.status === 'todo').length, doing: tasks.filter(t => t.status === 'doing').length, done: d, late: tasks.filter(overdue).length, pct: n ? Math.round(d / n * 100) : 0 } }
+        function toast(m, k) { const t = h('div', { class: 'toast ' + (k || '') }, m); document.body.append(t); setTimeout(() => t.remove(), 2800) }
+        function modal(title, body, foot) { const ov = h('div', { class: 'ov', onclick: e => { if (e.target === ov) ov.remove() } }); ov.append(h('div', { class: 'md', role: 'dialog', 'aria-modal': 'true' }, h('div', { class: 'mh' }, h('h3', {}, title), h('button', { class: 'ib', onclick: () => ov.remove(), 'aria-label': 'Tutup' }, ic('x'))), body, h('div', { class: 'mf' }, foot))); document.body.append(ov); return () => ov.remove() }
+        const ask = (msg, label = 'Hapus') => new Promise(r => { let c; const d = v => { c(); r(v) }; c = modal('Konfirmasi', h('p', {}, msg), [h('button', { class: 'btn g', onclick: () => d(false) }, 'Batal'), h('button', { class: 'btn d', onclick: () => d(true) }, label)]) });
+        const sel_ = (o, v) => { const s = h('select', {}, o.map(([a, b]) => h('option', { value: a }, b))); s.value = v; return s };
+        const lbl = (t, e) => [h('label', {}, t), e];
+        const empty = (m, b) => h('div', { class: 'empty' }, m, b ? h('div', {}, b) : null);
+        const addBtn = (due) => h('button', { class: 'btn', onclick: () => taskForm(null, due) }, 'Tambah tugas');
+        function toggle(id) { const t = tasks.find(x => x.id === id); t.status = t.status === 'done' ? 'todo' : 'done'; t.doneAt = t.status === 'done' ? Date.now() : null; t.updated = Date.now(); persist(); toast(t.status === 'done' ? 'Tugas selesai.' : 'Tugas dibuka kembali.'); render() }
+        async function delTask(t) { if (await ask('Hapus tugas "' + t.title + '"?')) { tasks = tasks.filter(x => x.id !== t.id); persist(); toast('Tugas dihapus.'); render() } }
+        function row(t) { const c = cat(t.cat), sd = t.subs.filter(s => s.done).length, late = overdue(t); return h('div', { class: 'task' + (t.status === 'done' ? ' done' : '') }, h('button', { class: 'chk' + (t.status === 'done' ? ' on' : ''), 'aria-label': 'Tandai selesai', onclick: () => toggle(t.id) }, ic('check')), h('div', { class: 'tb' }, h('div', { class: 'tt' }, t.title), t.desc ? h('div', { class: 'td' }, t.desc.slice(0, 120)) : null, h('div', { class: 'meta' }, h('span', { class: 'chip', style: '--c:' + c.color }, c.name), h('span', { class: 'chip p-' + t.pri }, P[t.pri]), h('span', { class: 'chip s-' + t.status }, S[t.status]), t.due ? h('span', { class: 'chip' + (late ? ' late' : '') }, (late ? 'Terlambat · ' : '') + fd(t.due) + (t.time ? ' ' + t.time : '')) : null, t.subs.length ? h('span', { class: 'chip' }, sd + ' dari ' + t.subs.length + ' subtask') : null)), h('div', { class: 'act' }, h('button', { class: 'ib', onclick: () => taskForm(t), 'aria-label': 'Edit' }, ic('edit')), h('button', { class: 'ib', onclick: () => delTask(t), 'aria-label': 'Hapus' }, ic('trash')))) }
+        const list = (a, m, due) => a.length ? a.map(row) : [empty(m, due === undefined ? null : addBtn(due))];
+        function taskForm(t, due) {
+            const e = !!t, d = t ? { ...t, subs: t.subs.map(s => ({ ...s })) } : { title: '', desc: '', cat: cats[0].id, pri: 'medium', status: 'todo', due: due || '', time: '', subs: [] };
+            const ti = h('input', { maxlength: 200, placeholder: 'Judul tugas', value: d.title }), de = h('textarea', { rows: 3, maxlength: 2000, placeholder: 'Deskripsi (opsional)' }); de.value = d.desc;
+            const sc = sel_(cats.map(c => [c.id, c.name]), d.cat), sp = sel_(Object.entries(P), d.pri), ss = sel_(Object.entries(S), d.status), di = h('input', { type: 'date', value: d.due }), tm = h('input', { type: 'time', value: d.time }), err = h('div', { class: 'err' }), sl = h('div'), ni = h('input', { placeholder: 'Tambah subtask', maxlength: 200 });
+            const rs = () => sl.replaceChildren(...d.subs.map(s => h('div', { class: 'sub' }, h('input', { type: 'checkbox', checked: s.done, onchange: ev => s.done = ev.target.checked }), h('input', { value: s.title, maxlength: 200, oninput: ev => s.title = ev.target.value }), h('button', { class: 'ib', type: 'button', onclick: () => { d.subs = d.subs.filter(x => x !== s); rs() } }, ic('x'))))); rs();
+            const addSub = () => { const v = ni.value.trim(); if (v) { d.subs.push({ id: Store.id(), title: v, done: false }); ni.value = ''; rs() } };
+            const body = h('div', {}, lbl('Judul', ti), err, lbl('Deskripsi', de), h('div', { class: 'row2' }, h('div', {}, lbl('Kategori', sc)), h('div', {}, lbl('Prioritas', sp))), h('div', { class: 'row2' }, h('div', {}, lbl('Status', ss)), h('div', {}, lbl('Deadline', di))), h('div', { class: 'row2' }, h('div', {}, lbl('Jam (opsional)', tm))), h('label', {}, 'Subtask'), sl, h('div', { class: 'sub' }, ni, h('button', { class: 'btn g', type: 'button', onclick: addSub }, 'Tambah')));
+            let c; const ok = () => { const title = ti.value.trim(); if (!title) { err.textContent = 'Judul tugas wajib diisi.'; ti.focus(); return } addSub(); const now = Date.now(), o = { ...d, title, desc: de.value.trim(), cat: sc.value, pri: sp.value, status: ss.value, due: di.value, time: di.value ? tm.value : '', subs: d.subs.filter(s => s.title.trim()), updated: now }; o.doneAt = o.status === 'done' ? (d.doneAt || now) : null; if (e) tasks = tasks.map(x => x.id === o.id ? o : x); else { o.id = Store.id(); o.created = now; tasks.push(o) } persist(); c(); toast(e ? 'Tugas diperbarui.' : 'Tugas ditambahkan.'); render() };
+            c = modal(e ? 'Edit tugas' : 'Tugas baru', body, [h('button', { class: 'btn g', onclick: () => c() }, 'Batal'), h('button', { class: 'btn', onclick: ok }, 'Simpan')]); ti.focus()
+        }
+        const cmp = { due: (a, b) => (a.due || '9999').localeCompare(b.due || '9999') || (a.time || '').localeCompare(b.time || ''), pri: (a, b) => P_O[a.pri] - P_O[b.pri], created: (a, b) => b.created - a.created }, P_O = { high: 0, medium: 1, low: 2 };
+        const filt = () => { const q = F.q.toLowerCase(); return tasks.filter(t => (!q || t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)) && (!F.cat || t.cat === F.cat) && (!F.st || t.status === F.st) && (!F.pri || t.pri === F.pri)).sort(cmp[F.sort]) };
+        const panel = (t, k) => h('div', { class: 'card' }, h('h3', {}, t), k);
+        const ring = (p, c, l, sub) => { const r = 36, C = 2 * Math.PI * r, d = h('div', { class: 'card flex items-center gap-3' }), w = document.createElement('div'); w.innerHTML = `<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="${r}" fill="none" stroke="var(--bd)" stroke-width="9"/><circle cx="44" cy="44" r="${r}" fill="none" stroke="${c}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C * p / 100} ${C}" transform="rotate(-90 44 44)"/><text x="44" y="49" text-anchor="middle" font-size="16" font-weight="700" fill="${c}">${p}%</text></svg>`; d.append(w, h('div', {}, h('div', { class: 'font-semibold' }, l), h('div', { class: 'mu' }, sub))); return d };
+        function vDash() {
+            const s = stats(), td = today(), hr = new Date().getHours(), g = hr < 11 ? 'Selamat pagi' : hr < 15 ? 'Selamat siang' : hr < 18 ? 'Selamat sore' : 'Selamat malam', open = tasks.filter(t => t.status !== 'done');
+            const tile = (l, v, c) => h('div', { class: 'rounded-2xl p-3 text-white shadow-md bg-gradient-to-br ' + c }, h('div', { class: 'text-xs opacity-90' }, l), h('div', { class: 'text-3xl font-bold mt-1' }, String(v)));
+            const days = []; for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); const k = ds(d); days.push([d.getDate(), tasks.filter(t => t.doneAt && ds(new Date(t.doneAt)) === k).length]) }
+            const W = 560, H = 170, mx = Math.max(2, ...days.map(x => x[1])), P = days.map((x, i) => [24 + i * (W - 34) / 13, H - 26 - x[1] / mx * (H - 44)]), ln = P.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L'), ar = h('div');
+            ar.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="w-full h-auto"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f59e0b" stop-opacity=".35"/><stop offset="1" stop-color="#f59e0b" stop-opacity=".02"/></linearGradient></defs>${[0, 1, 2].map(i => `<line x1="24" x2="${W - 10}" y1="${14 + i * 65}" y2="${14 + i * 65}" stroke="var(--bd)"/>`).join('')}<path d="M${ln} L${P[13][0]},${H - 26} L24,${H - 26}Z" fill="url(#ag)"/><path d="M${ln}" fill="none" stroke="#f59e0b" stroke-width="2.5"/>${P.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#f59e0b" stroke="var(--sf)" stroke-width="2"/>`).join('')}${days.map((x, i) => `<text x="${P[i][0]}" y="${H - 8}" text-anchor="middle" font-size="11" fill="var(--mu)">${x[0]}</text>`).join('')}</svg>`;
+            const r = 52, C = 2 * Math.PI * r, tot = tasks.length; let off = 0, seg = ''; cats.forEach(c => { const n = tasks.filter(t => t.cat === c.id).length; if (!n) return; const l = C * n / tot; seg += `<circle cx="70" cy="70" r="${r}" fill="none" stroke="${c.color}" stroke-width="18" stroke-dasharray="${l} ${C - l}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`; off += l });
+            const dn = h('div', { class: 'flex justify-center' }); dn.innerHTML = `<svg viewBox="0 0 140 140" width="150" height="150"><circle cx="70" cy="70" r="${r}" fill="none" stroke="var(--bd)" stroke-width="18"/>${seg}<text x="70" y="78" text-anchor="middle" font-size="26" font-weight="700" fill="var(--tx)">${tot}</text></svg>`;
+            const hi = tasks.filter(t => t.pri === 'high'), pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+            return h('div', {},
+                h('div', { class: 'grid gap-3 lg:grid-cols-[1fr_2fr]' },
+                    h('div', { class: 'card flex items-center gap-4' }, h('div', { class: 'av !w-16 !h-16 text-xl' }, (set.name || 'U').trim().charAt(0).toUpperCase()), h('div', { class: 'min-w-0' }, h('div', { class: 'font-bold text-lg truncate' }, set.name || 'Pengguna'), h('div', { class: 'mu' }, g + ', selamat datang di TaskFlow'), h('div', { class: 'mu' }, fd(td, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })))),
+                    h('div', { class: 'card' }, h('div', { class: 'font-semibold mb-2' }, 'Ringkasan Tugas'), h('div', { class: 'grid grid-cols-3 gap-3' }, tile('Total Tugas', s.n, 'from-amber-400 to-orange-500'), tile('Dikerjakan', s.doing, 'from-indigo-600 to-blue-900'), tile('Selesai', s.done, 'from-teal-400 to-emerald-500')), h('div', { class: 'prog' }, h('i', { style: 'width:' + s.pct + '%' })), h('div', { class: 'mu' }, s.pct + '% selesai · ' + s.todo + ' To Do · ' + s.late + ' terlambat'))),
+                !s.n ? h('div', { class: 'card' }, empty('Belum ada tugas. Mulai dengan menambahkan tugas pertamamu.', addBtn())) : null,
+                h('div', { class: 'grid gap-3 lg:grid-cols-[2fr_1fr]' }, h('div', { class: 'card' }, h('h3', {}, 'Tugas selesai (14 hari terakhir)'), ar), h('div', { class: 'card' }, h('h3', {}, 'Berdasarkan kategori'), dn, h('div', { class: 'flex flex-wrap gap-x-3 gap-y-1 mt-2 justify-center' }, cats.filter(c => tasks.some(t => t.cat === c.id)).map(c => h('div', { class: 'flex items-center gap-1 text-xs' }, h('i', { class: 'sw', style: 'background:' + c.color }), c.name))))),
+                h('div', { class: 'font-bold text-lg mb-2' }, 'Data Grafik'),
+                h('div', { class: 'grid gap-3 sm:grid-cols-3' }, ring(s.pct, '#f59e0b', 'Penyelesaian', s.done + ' dari ' + s.n + ' tugas'), ring(pct(hi.filter(t => t.status === 'done').length, hi.length), '#10b981', 'Prioritas tinggi', 'selesai'), ring(s.n ? 100 - pct(s.late, s.n) : 0, '#2563eb', 'Bebas terlambat', s.late + ' tugas terlambat')),
+                h('div', { class: 'two' }, panel('Agenda hari ini', list(open.filter(t => t.due === td).sort(cmp.due).slice(0, 5), 'Tidak ada agenda hari ini.')), panel('Deadline terdekat', list(open.filter(t => t.due && t.due > td).sort(cmp.due).slice(0, 5), 'Tidak ada deadline mendatang.')), panel('Prioritas tinggi', list(open.filter(t => t.pri === 'high').sort(cmp.due).slice(0, 5), 'Tidak ada tugas prioritas tinggi.'))))
+        }
+        const bar = (l, v, mx, c) => h('div', { class: 'bar' }, h('span', {}, l), h('div', { class: 'tr' }, h('i', { style: 'width:' + (mx ? v / mx * 100 : 0) + '%;' + (c ? '--c:' + c : '') })), h('b', {}, String(v)));
+        function vTasks() {
+            const box = h('div', { class: 'card' }), upd = () => box.replaceChildren(...list(filt(), 'Tidak ada tugas yang cocok dengan filter.', undefined));
+            const mk = (o, k) => { const s = sel_(o, F[k]); s.onchange = () => { F[k] = s.value; upd() }; return s };
+            const q = h('input', { type: 'search', placeholder: 'Cari judul atau deskripsi', value: F.q, oninput: e => { F.q = e.target.value; upd() } });
+            upd(); return h('div', {}, h('div', { class: 'filters' }, q, mk([['', 'Semua kategori'], ...cats.map(c => [c.id, c.name])], 'cat'), mk([['', 'Semua status'], ...Object.entries(S)], 'st'), mk([['', 'Semua prioritas'], ...Object.entries(P)], 'pri'), mk([['due', 'Urut: deadline'], ['pri', 'Urut: prioritas'], ['created', 'Urut: terbaru']], 'sort'), h('button', { class: 'btn g', onclick: () => { F = { q: '', cat: '', st: '', pri: '', sort: 'due' }; render() } }, 'Reset filter')), box)
+        }
+        function vToday() { const td = today(), late = tasks.filter(overdue).filter(t => t.due < td), now = tasks.filter(t => t.due === td).sort(cmp.due); return h('div', {}, late.length ? h('div', { class: 'card' }, h('h3', { style: 'color:var(--er)' }, 'Terlambat (' + late.length + ')'), late.sort(cmp.due).map(row)) : null, h('div', { class: 'card' }, h('h3', {}, 'Hari ini'), list(now, 'Tidak ada tugas dengan deadline hari ini.', td))) }
+        function vUp() { const td = today(), u = tasks.filter(t => t.due && t.due > td).sort(cmp.due); if (!u.length) return h('div', { class: 'card' }, empty('Belum ada tugas mendatang.', addBtn())); const g = {}; u.forEach(t => (g[t.due] = g[t.due] || []).push(t)); return h('div', {}, Object.entries(g).map(([k, a]) => h('div', { class: 'card' }, h('h3', {}, fd(k, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })), a.map(row)))) }
+        function vCal() {
+            const y = cm.getFullYear(), m = cm.getMonth(), fi = new Date(y, m, 1).getDay(), dim = new Date(y, m + 1, 0).getDate(), by = {}; tasks.forEach(t => { if (t.due) (by[t.due] = by[t.due] || []).push(t) });
+            const g = h('div', { class: 'cal' }, ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map(x => h('div', { class: 'wd' }, x))); for (let i = 0; i < fi; i++)g.append(h('div'));
+            for (let d = 1; d <= dim; d++) { const k = y + '-' + pad(m + 1) + '-' + pad(d); g.append(h('button', { class: 'day' + (k === sel ? ' sel' : '') + (k === today() ? ' tdy' : ''), onclick: () => { sel = k; render() } }, String(d), h('div', { class: 'dots' }, (by[k] || []).slice(0, 4).map(t => h('i', { class: 'dot', style: 'background:' + stc(t) }))))) }
+            const mv = n => () => { cm = new Date(y, m + n, 1); render() };
+            return h('div', {}, h('div', { class: 'card' }, h('div', { class: 'nav2' }, h('button', { class: 'btn g', onclick: mv(-1), 'aria-label': 'Bulan sebelumnya' }, '‹'), h('b', {}, cm.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })), h('button', { class: 'btn g', onclick: mv(1), 'aria-label': 'Bulan berikutnya' }, '›')), h('button', { class: 'btn g', style: 'margin-bottom:10px', onclick: () => { const n = new Date(); cm = new Date(n.getFullYear(), n.getMonth(), 1); sel = today(); render() } }, 'Hari ini'), g, h('div', { class: 'mu', style: 'margin-top:8px' }, 'Titik: biru = To Do, oranye = In Progress, hijau = Done, merah = terlambat')),
+                h('div', { class: 'card' }, h('h3', {}, fd(sel, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })), list((by[sel] || []).sort(cmp.due), 'Tidak ada tugas pada tanggal ini.'), h('div', { style: 'margin-top:8px' }, addBtn(sel))))
+        }
+        function catForm(c) {
+            const e = !!c, n = h('input', { maxlength: 40, placeholder: 'Nama kategori', value: c ? c.name : '' }), col = h('input', { type: 'color', value: c ? c.color : '#4f46e5' }), err = h('div', { class: 'err' }); let cl;
+            const ok = () => { const name = n.value.trim(); if (!name) { err.textContent = 'Nama kategori wajib diisi.'; return } if (cats.some(x => x.name.toLowerCase() === name.toLowerCase() && (!e || x.id !== c.id))) { err.textContent = 'Nama kategori sudah ada.'; return } if (e) { c.name = name; c.color = col.value } else cats.push({ id: Store.id(), name, color: col.value }); persist(); cl(); toast('Kategori disimpan.'); render() };
+            cl = modal(e ? 'Edit kategori' : 'Kategori baru', h('div', {}, lbl('Nama', n), err, lbl('Warna', col)), [h('button', { class: 'btn g', onclick: () => cl() }, 'Batal'), h('button', { class: 'btn', onclick: ok }, 'Simpan')])
+        }
+        async function delCat(c) { const used = tasks.filter(t => t.cat === c.id).length; if (used) return toast('Kategori masih dipakai ' + used + ' tugas. Pindahkan atau hapus tugasnya dulu.', 'err'); if (cats.length < 2) return toast('Minimal harus ada satu kategori.', 'err'); if (await ask('Hapus kategori "' + c.name + '"?')) { cats = cats.filter(x => x.id !== c.id); persist(); toast('Kategori dihapus.'); render() } }
+        function vCats() { return h('div', { class: 'card' }, h('button', { class: 'btn', onclick: () => catForm() }, 'Tambah kategori'), cats.map(c => h('div', { class: 'crow' }, h('i', { class: 'sw', style: 'background:' + c.color }), h('span', {}, c.name), h('span', { class: 'mu' }, tasks.filter(t => t.cat === c.id).length + ' tugas'), h('button', { class: 'ib', onclick: () => catForm(c), 'aria-label': 'Edit' }, ic('edit')), h('button', { class: 'ib', onclick: () => delCat(c), 'aria-label': 'Hapus' }, ic('trash'))))) }
+        function noteForm(n) {
+            const e = !!n, ti = h('input', { maxlength: 120, placeholder: 'Judul', value: n ? n.title : '' }), bo = h('textarea', { rows: 8, maxlength: 10000, placeholder: 'Isi catatan' }), pn = h('input', { type: 'checkbox', checked: n && n.pin }); bo.value = n ? n.body : ''; const err = h('div', { class: 'err' }); let cl;
+            const ok = () => { const title = ti.value.trim(); if (!title) { err.textContent = 'Judul catatan wajib diisi.'; return } const now = Date.now(); if (e) Object.assign(n, { title, body: bo.value, pin: pn.checked, updated: now }); else notes.push({ id: Store.id(), title, body: bo.value, pin: pn.checked, created: now, updated: now }); persist(); cl(); toast('Catatan disimpan.'); render() };
+            cl = modal(e ? 'Edit catatan' : 'Catatan baru', h('div', {}, lbl('Judul', ti), err, lbl('Isi', bo), h('div', { class: 'sub', style: 'margin-top:10px' }, pn, 'Pin catatan ini')), [h('button', { class: 'btn g', onclick: () => cl() }, 'Batal'), h('button', { class: 'btn', onclick: ok }, 'Simpan')])
+        }
+        function vNotes() {
+            const box = h('div', { class: 'notes' }), upd = () => { const q = nq.toLowerCase(), a = notes.filter(n => !q || n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)).sort((a, b) => b.pin - a.pin || b.updated - a.updated); box.replaceChildren(...(a.length ? a.map(n => h('div', { class: 'card note' }, h('div', { class: 'mh' }, h('b', { style: 'overflow-wrap:anywhere' }, n.title), h('button', { class: 'ib', style: n.pin ? 'color:var(--ac)' : '', onclick: () => { n.pin = !n.pin; n.updated = Date.now(); persist(); render() }, 'aria-label': 'Pin' }, ic('pin'))), h('p', {}, n.body.slice(0, 200)), h('div', { class: 'mu' }, 'Diperbarui ' + new Date(n.updated).toLocaleDateString('id-ID')), h('div', { class: 'act', style: 'margin-top:6px' }, h('button', { class: 'ib', onclick: () => noteForm(n), 'aria-label': 'Edit' }, ic('edit')), h('button', { class: 'ib', onclick: async () => { if (await ask('Hapus catatan "' + n.title + '"?')) { notes = notes.filter(x => x !== n); persist(); toast('Catatan dihapus.'); render() } }, 'aria-label': 'Hapus' }, ic('trash'))))) : [empty('Belum ada catatan.')])) }; upd();
+            return h('div', {}, h('div', { class: 'filters', style: 'grid-template-columns:1fr auto' }, h('input', { type: 'search', placeholder: 'Cari catatan', value: nq, oninput: e => { nq = e.target.value; upd() } }), h('button', { class: 'btn', onclick: () => noteForm() }, 'Catatan baru')), box)
+        }
+        function vStats() {
+            const s = stats(), wk = []; for (let i = 5; i >= 0; i--) { const e = Date.now() - i * 6048e5, b = e - 6048e5; wk.push([i ? i + ' mgg lalu' : 'Minggu ini', tasks.filter(t => t.doneAt && t.doneAt > b && t.doneAt <= e).length]) }
+            const cc = cats.map(c => [c.name, tasks.filter(t => t.cat === c.id).length, c.color]), pc = [['High', 'high', 'var(--er)'], ['Medium', 'medium', 'var(--wa)'], ['Low', 'low', 'var(--ok)']].map(([l, k, c]) => [l, tasks.filter(t => t.pri === k).length, c]), bars = a => { const m = Math.max(1, ...a.map(x => x[1])); return a.map(x => bar(x[0], x[1], m, x[2])) };
+            if (!s.n) return h('div', { class: 'card' }, empty('Statistik muncul setelah kamu menambahkan tugas.', addBtn()));
+            return h('div', {}, h('div', { class: 'grid g6' }, [['Total', s.n], ['Selesai', s.done], ['Aktif', s.todo + s.doing], ['Terlambat', s.late], ['Penyelesaian', s.pct + '%']].map(([l, v]) => h('div', { class: 'card' }, h('div', { class: 'mu' }, l), h('div', { class: 'big' }, String(v))))), h('div', { class: 'two' }, panel('Tugas selesai per minggu', bars(wk)), panel('Berdasarkan prioritas', bars(pc)), panel('Berdasarkan kategori', bars(cc))))
+        }
+        function payload() { return { app: 'taskflow', version: 1, exportedAt: new Date().toISOString(), tasks, categories: cats, notes, settings: set } }
+        function dl() { const txt = JSON.stringify(payload(), null, 2), a = h('a', { href: URL.createObjectURL(new Blob([txt], { type: 'application/json' })), download: 'taskflow-backup-' + today() + '.json' }); document.body.append(a); a.click(); a.remove(); return txt }
+        function impFile(f) {
+            const r = new FileReader(); r.onload = () => {
+                let o; try { o = JSON.parse(r.result) } catch (e) { return toast('File bukan JSON yang valid.', 'err') }
+                if (!o || o.app !== 'taskflow' || typeof o.version !== 'number' || o.version > 1 || !Array.isArray(o.tasks) || !Array.isArray(o.categories) || !Array.isArray(o.notes)) return toast('Format atau versi file tidak dikenali.', 'err');
+                const T = o.tasks.map(sT).filter(Boolean), C = o.categories.map(sC).filter(Boolean), N = o.notes.map(sN).filter(Boolean); let cl;
+                const rep = () => { dl(); tasks = T; if (C.length) cats = C; notes = N; persist(); cl(); toast('Data diganti. Backup data lama sudah diunduh.'); render() };
+                const mer = () => { const ti = new Set(tasks.map(x => x.id)), ci = new Set(cats.map(x => x.id)), ni = new Set(notes.map(x => x.id)); tasks.push(...T.filter(x => !ti.has(x.id))); cats.push(...C.filter(x => !ci.has(x.id))); notes.push(...N.filter(x => !ni.has(x.id))); persist(); cl(); toast('Data digabungkan.'); render() };
+                cl = modal('Impor data', h('div', {}, h('p', {}, 'File berisi ' + T.length + ' tugas, ' + C.length + ' kategori, dan ' + N.length + ' catatan.'), h('p', { class: 'mu' }, 'Ganti menimpa data saat ini (backup diunduh otomatis dulu). Gabung hanya menambahkan data dengan ID yang belum ada.')), [h('button', { class: 'btn g', onclick: () => cl() }, 'Batal'), h('button', { class: 'btn g', onclick: mer }, 'Gabung'), h('button', { class: 'btn d', onclick: rep }, 'Ganti')])
+            }; r.readAsText(f)
+        }
+        function vSet() {
+            const nm = h('input', { maxlength: 40, value: set.name, placeholder: 'Nama tampilan' }), th = sel_([['auto', 'Ikuti sistem'], ['light', 'Terang'], ['dark', 'Gelap']], Store.get(K.th, 'auto')), st = sel_(PAGES.map(p => [p[0], p[1]]), set.start), fi = h('input', { type: 'file', accept: 'application/json,.json', style: 'display:none', onchange: e => { if (e.target.files[0]) impFile(e.target.files[0]); e.target.value = '' } });
+            return h('div', {}, h('div', { class: 'card' }, h('h3', {}, 'Profil lokal'), h('p', { class: 'mu' }, 'Nama hanya disimpan di browser ini. Tidak ada akun dan tidak ada sinkronisasi online.'), lbl('Nama tampilan', nm), lbl('Tema', th), lbl('Halaman awal', st), h('div', { class: 'mf', style: 'justify-content:flex-start' }, h('button', { class: 'btn', onclick: () => { set.name = nm.value.trim(); set.start = st.value; Store.set(K.th, th.value); persist(); applyTheme(); toast('Pengaturan disimpan.'); render() } }, 'Simpan'))),
+                h('div', { class: 'card' }, h('h3', {}, 'Backup data'), h('p', { class: 'mu' }, 'Data tersimpan di browser perangkat ini dan tidak otomatis tersedia di perangkat lain. Ekspor secara berkala.'), h('div', { class: 'mf', style: 'justify-content:flex-start' }, h('button', { class: 'btn', onclick: () => { dl(); toast('Backup diunduh.') } }, 'Ekspor JSON'), h('button', { class: 'btn g', onclick: () => { const ta = h('textarea', { rows: 10, readonly: true }); ta.value = JSON.stringify(payload(), null, 2); modal('Data JSON (salin manual)', ta, []) } }, 'Tampilkan JSON'), h('button', { class: 'btn g', onclick: () => fi.click() }, 'Impor JSON'), fi)),
+                h('div', { class: 'card' }, h('h3', { style: 'color:var(--er)' }, 'Zona bahaya'), h('button', { class: 'btn d', onclick: async () => { if (await ask('Semua tugas, kategori, dan catatan akan dihapus permanen. Lanjutkan?', 'Lanjut') && await ask('Yakin? Tindakan ini tidak bisa dibatalkan. Ekspor backup dulu jika perlu.', 'Hapus semua data')) { Object.values(K).forEach(Store.del); load(); applyTheme(); toast('Semua data dihapus.'); render() } } }, 'Reset semua data')))
+        }
+        const VIEWS = { dashboard: vDash, tasks: vTasks, today: vToday, upcoming: vUp, calendar: vCal, categories: vCats, notes: vNotes, stats: vStats, settings: vSet };
+        function applyTheme() { const t = Store.get(K.th, 'auto'), r = document.documentElement; t === 'auto' ? r.removeAttribute('data-theme') : r.dataset.theme = t; const k = document.getElementById('knob'); if (k) k.style.left = isDark() ? '23px' : '3px' }
+        const isDark = () => document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme:dark)').matches);
+        function render() { const id = VIEWS[location.hash.slice(1)] ? location.hash.slice(1) : set.start; document.querySelectorAll('nav button[data-p]').forEach(b => b.classList.toggle('on', b.dataset.p === id)); $('#ttl').textContent = PAGES.find(p => p[0] === id)[1]; $('#av').textContent = (set.name || 'U').trim().charAt(0).toUpperCase(); const m = $('#main'); m.replaceChildren(VIEWS[id]()); }
+        const $ = s => document.querySelector(s);
+        load(); applyTheme();
+        function shell() { $('#nav').replaceChildren(h('div', { class: 'brand' }, ic('logo', 30), 'TaskFlow'), ...PAGES.map(([id, l, i]) => h('button', { class: 'nb', 'data-p': id, onclick: () => { location.hash = id } }, ic(i), l)), h('div', { class: 'sw2' }, h('span', {}, 'Mode gelap'), h('button', { role: 'switch', 'aria-label': 'Mode gelap', style: 'width:44px;height:24px;border-radius:12px;background:rgba(255,255,255,.35);position:relative', onclick: flip }, h('i', { id: 'knob', style: 'position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s' })))); $('#th').replaceChildren(ic('moon')); $('#add').replaceChildren(ic('plus', 18), 'Tugas'); applyTheme(); render() }
+        const flip = () => { Store.set(K.th, isDark() ? 'light' : 'dark'); applyTheme() };
+
+        $('#th').onclick = flip;
+        $('#add').onclick = () => taskForm();
+        $('#gs').oninput = e => { F.q = e.target.value; if (location.hash !== '#tasks') location.hash = 'tasks'; else render() };
+        window.addEventListener('hashchange', render); shell();
+    </script>
+</body>
+
+</html>
